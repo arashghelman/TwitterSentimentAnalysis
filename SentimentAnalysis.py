@@ -41,7 +41,7 @@ word2Vec = Word2Vec(vectorSize=100, minCount=5, inputCol="filtered_text", output
 
 preprocessing_start = time()
 
-preprocessing_pipeline = Pipeline(stages=[tokenizer, remover, word2Vec])
+preprocessing_pipeline = Pipeline(stages=[tokenizer, remover, hashingTF, idf])
 model = preprocessing_pipeline.fit(train_df)
 train_df = model.transform(train_df).repartition(128).cache()
 
@@ -56,19 +56,19 @@ test_df = model.transform(test_df).repartition(2).cache()
 
 # Naive Bayes #
 
-# nb_start = time()
+nb_start = time()
 
-# modelType="multinomial"
-# nb = NaiveBayes(featuresCol="features", labelCol="label", modelType=modelType)
-# nb_model = nb.fit(train_df)
-# predictions = nb_model.transform(test_df)
-# accuracy_evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
-# accuracy = accuracy_evaluator.evaluate(predictions)
-# f1_evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="f1")
-# f1 = f1_evaluator.evaluate(predictions)
+modelType="multinomial"
+nb = NaiveBayes(featuresCol="features", labelCol="label", modelType=modelType)
+nb_model = nb.fit(train_df)
+predictions = nb_model.transform(test_df)
+accuracy_evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
+accuracy = accuracy_evaluator.evaluate(predictions)
+f1_evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="f1")
+f1 = f1_evaluator.evaluate(predictions)
 
-# nb_time = time() - nb_start
-# logger.info(f"Naive Bayes (Type: {modelType}) Time: {nb_time:.2f}s - Accuracy: {accuracy:.2f} - F1 Score: {f1:.2f}")
+nb_time = time() - nb_start
+logger.info(f"Naive Bayes (Type: {modelType}) Time: {nb_time:.2f}s - Accuracy: {accuracy:.2f} - F1 Score: {f1:.2f}")
 
 # Logistic Regression #
 
