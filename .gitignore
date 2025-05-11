@@ -1,4 +1,4 @@
 /.DS_Store
 /dataset
-/output
-/preprocessing_pipeline
+/logs
+/__pycache__
